@@ -1,0 +1,1 @@
+"""MAGIC telescope classification project."""
