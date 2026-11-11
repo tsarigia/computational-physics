@@ -68,10 +68,11 @@ def main() -> None:
     )
     
     validation_fraction = VALIDATION_SIZE / (TEST_SIZE + VALIDATION_SIZE)
+    
     X_validation, X_test, y_validation, y_test = train_test_split(
         X_remaining,
         y_remaining,
-        test_size=1 - validation_fraction,
+        test_size=1 - validation_fraction, # this ensures the validation set is 15% of the total dataset
         random_state=RANDOM_STATE,
     )
 
