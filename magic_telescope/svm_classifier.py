@@ -36,7 +36,7 @@ def main() -> None:
         default=DEFAULT_DATA_PATH,
         help="Path to magic04.data (default: repository root).",
     )
-    args = parser.parse_args()
+    args = parser.parse_args()# Parse the command-line arguments provided by the user
 
     features, labels = load_dataset(args.data_path)
     X_train, X_test, y_train, y_test = split_dataset(features, labels)
