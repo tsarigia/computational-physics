@@ -10,18 +10,21 @@ The `paper.xlsx` file is stored in this `path_loss/` directory. It contains
 18,898 rows of numeric data without a header row. The first four columns are
 used as model features and the last column is the target:
 
-| Dataset column | Name in code | Use |
+| Dataset column | Name in code | Observed interpretation |
 |---|---|---|
-| 1 | `Feature_1` | Input feature |
-| 2 | `Feature_2` | Input feature |
-| 3 | `Feature_3` | Input feature |
-| 4 | `Feature_4` | Input feature |
-| 5 | `Path_Loss` | Target to predict, in dB |
+| 1 | `Feature_1` | antenna height |
+| 2 | `Feature_2` | X coordinate |
+| 3 | `Feature_3` | Y coordinate |
+| 4 | `Feature_4` | Distance |
+| 5 | `Path_Loss` | Target. Values are negative; the workbook does not establish whether these are path loss or received signal power, nor their units. |
 
-The source file does not describe the first four columns, so the code uses
-neutral names rather than assigning them unverified physical meanings. The
-loader checks that the file exists, has five columns, and contains only
-numeric, finite values.
+These are observations and inferences from the numeric data, not documented
+column labels. Column 1 may be antenna height, but the workbook does not
+identify whether it is transmitter or receiver height. The code retains
+neutral feature names and the existing `Path_Loss` target name for
+compatibility; confirm physical meanings and units against the dataset's
+source documentation. The loader checks that the file exists, has five
+columns, and contains only numeric, finite values.
 
 ## Setup
 
