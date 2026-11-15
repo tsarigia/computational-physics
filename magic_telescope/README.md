@@ -47,6 +47,7 @@ python -m magic_telescope.tree_classifier
 python -m magic_telescope.random_forest_classifier
 python -m magic_telescope.gradient_boosting_classifier
 python -m magic_telescope.svm_classifier
+python -m magic_telescope.operating_points
 ```
 
 Each script accepts an optional `--data-path` argument. For example:
@@ -60,6 +61,10 @@ The decision-tree script also saves a visualization to
 change its destination.
 
 ## Data preparation and evaluation
+
+The four original classifier scripts provide exploratory comparisons. The
+separate `operating_points` study below uses a different training/validation
+protocol for model and threshold selection.
 
 [`data_utils.py`](./data_utils.py) contains the shared data-loading, splitting,
 and metric code. It:
@@ -130,13 +135,59 @@ but also misclassify more hadrons as gamma. This is a trade-off, not a single
 universal ranking: the preferred model depends on the acceptable background
 rate and the cost of each type of error.
 
-The dataset description recommends comparing classifiers using the ROC curve
-at low hadron acceptance rates (including 1%, 2%, 5%, 10%, and 20%). This
-project currently reports overall ROC-AUC and confusion matrices at each
-model's default decision threshold; it does **not** yet calculate performance
-at those specified operating points. In particular, a high ROC-AUC or gamma
-recall alone does not demonstrate that a model meets a required background
-rejection level.
+The following study examines the low-hadron-acceptance operating points
+recommended in the dataset description. A high overall ROC-AUC or gamma
+recall at the default threshold alone does not demonstrate that a model
+meets a required background rejection level.
+
+## Low-background operating-point study
+
+Run `python -m magic_telescope.operating_points` from the repository root.
+The study keeps the original stratified 70/30 development/test split, then
+splits the development data into 9,985 training and 3,329 validation events.
+The test set contains 5,706 events. All splits use `random_state=42`.
+
+- On the training set, three-fold stratified cross-validation selects among
+  Decision Trees, Random Forests, Gradient Boosting, and RBF SVMs with the
+  parameter choices printed by the script. SVM scaling is fitted within each
+  training fold.
+- The selection score is scikit-learn's **standardized partial ROC-AUC**
+  over hadron acceptance rates from 0% to 20%. It weights that range rather
+  than optimizing any one operating point. The fold standard deviations
+  printed by the script describe variation across these folds, not confidence
+  intervals; the best cross-validation score is also subject to selection
+  optimism.
+- The selected model is fitted on the training set only. For each requested
+  acceptance rate, the validation scores determine the most permissive
+  threshold with validation hadron acceptance at or below the target.
+  Tied scores can make the achieved rate lower. Scores equal to the threshold
+  are accepted as gamma.
+- These fixed thresholds are then applied to the test set. The test hadron
+  acceptance and gamma recall are reported separately with two-sided 95%
+  Wilson intervals for the respective proportions.
+
+For the supplied dataset, using scikit-learn 1.9.1 and NumPy 2.5.4, the selected
+model was a 100-tree Random Forest with `min_samples_leaf=1`; its training CV
+partial ROC-AUC was 0.8245 and its test ROC-AUC was 0.9350. Results may vary
+with dependency versions. The output was:
+
+| Target hadron acceptance | Threshold | Validation hadron acceptance | Test hadron acceptance (95% CI) | Test gamma recall (95% CI) |
+|---:|---:|---:|---:|---:|
+| 1% | 0.96 | 10/1,171 (0.85%) | 24/2,006 (1.20%; 0.81–1.77%) | 1,245/3,700 (33.65%; 32.14–35.19%) |
+| 2% | 0.93 | 21/1,171 (1.79%) | 50/2,006 (2.49%; 1.90–3.27%) | 1,660/3,700 (44.86%; 43.27–46.47%) |
+| 5% | 0.87 | 54/1,171 (4.61%) | 105/2,006 (5.23%; 4.34–6.30%) | 2,249/3,700 (60.78%; 59.20–62.34%) |
+| 10% | 0.77 | 113/1,171 (9.65%) | 186/2,006 (9.27%; 8.08–10.62%) | 2,879/3,700 (77.81%; 76.44–79.12%) |
+| 20% | 0.59 | 231/1,171 (19.73%) | 369/2,006 (18.39%; 16.76–20.15%) | 3,378/3,700 (91.30%; 90.35–92.16%) |
+
+The target applies to the validation sample, not a guarantee on test or future
+data: test acceptance exceeds the target at 1%, 2%, and 5% in this run.
+Intervals describe binomial sampling uncertainty for a fixed fitted model
+and threshold, assuming independent events; they do not include uncertainty
+from model selection, training, or threshold selection. They are individual
+intervals, not simultaneous guarantees.
+
+Run the focused checks with
+`python -m unittest magic_telescope.test_operating_points -v`.
 
 ## Limitations
 
@@ -145,17 +196,16 @@ rejection level.
 - The hadron frequency in the file is known to be lower than in real data.
   Consequently, test-set precision and accuracy may not reflect real-world
   values.
-- Results come from one train/test split. The model comparisons, especially
+- Results come from one split. The original model comparisons, especially
   the several SVM settings inspected on the same test set, are exploratory.
-  Selecting a final model based on these results can make its reported test
-  performance optimistic.
-- No decision threshold has been selected for a target hadron acceptance
-  rate, and no independent real-data validation has been performed.
+  The operating-point script does not use test labels for selection, but this
+  same test split was already inspected in earlier comparisons; it is not a
+  fresh independent final evaluation.
+- No independent real-data validation has been performed.
 
 These classifiers are suitable for learning and comparing methods on this
-dataset. Further cross-validation, operating-point analysis, and independent
-validation on representative real observations would be needed before drawing
-scientific or operational conclusions.
+dataset. Independent validation on representative real observations would be
+needed before drawing operational conclusions.
 
 ## Dataset reference
 
