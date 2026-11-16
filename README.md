@@ -11,7 +11,6 @@
 | Project | What it does | Open |
 |---|---|---|
 | **MAGIC Telescope Classification** | Compares classifiers that distinguish gamma-ray events from hadron background using the MAGIC dataset. | [Open `magic_telescope/`](./magic_telescope/) |
-| **Path-Loss Regression** | Predicts path loss from four numeric features using Decision Tree, Random Forest, and Gradient Boosting regressors. | [Open `path_loss/`](./path_loss/) |
 | **Pendulum ANN** | Generates synthetic pendulum data and trains a feedforward neural network to predict oscillation period. | [Open `pendulum_ann/`](./pendulum_ann/) |
 
 Each project folder contains its own README with dataset details, methodology,
@@ -51,23 +50,27 @@ Run these commands from the repository root after installing dependencies:
 # MAGIC gamma-ray classification
 python -m magic_telescope.random_forest_classifier
 
-# Path-loss regression
-python -m path_loss.decision_tree_regressor
-
 # Pendulum ANN: generate data, then train and evaluate
 python -m pendulum_ann.generate_dataset
 python -m pendulum_ann.train_model
 ```
 
-The MAGIC and path-loss projects expect their datasets in their respective
-folders. The pendulum project generates its own reproducible synthetic
-dataset. See each project's README for all model commands, optional arguments,
-outputs, and interpretation of its results.
+The MAGIC project expects its dataset in its folder. The pendulum project
+generates its own reproducible synthetic dataset. See each project's README
+for all model commands, optional arguments, outputs, and interpretation of
+its results.
+
+## Run the MAGIC tests
+
+```powershell
+python -m unittest discover -s magic_telescope -p "test_*.py" -v
+```
+
+GitHub Actions also runs these tests on pushes and pull requests.
 
 ## Repository layout
 
 ```text
 magic_telescope/   MAGIC event-classification project and dataset
-path_loss/         Path-loss regression project and Excel dataset
 pendulum_ann/      Pendulum-period ANN, dataset generator, and outputs
 ```

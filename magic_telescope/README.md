@@ -214,8 +214,15 @@ and threshold, assuming independent events; they do not include uncertainty
 from model selection, training, or threshold selection. They are individual
 intervals, not simultaneous guarantees.
 
-Run the focused checks with
-`python -m unittest magic_telescope.test_operating_points -v`.
+Run all MAGIC tests from the repository root with:
+
+```powershell
+python -m unittest discover -s magic_telescope -p "test_*.py" -v
+```
+
+The tests cover data loading and splitting, correlation-plot generation, and
+operating-point edge cases. GitHub Actions runs them on pushes and pull
+requests.
 
 ## Limitations
 
