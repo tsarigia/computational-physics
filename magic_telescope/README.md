@@ -108,6 +108,34 @@ The `actual hadron predicted gamma` entry is especially important: it counts
 background events mistakenly accepted as gamma. Its rate in the last column
 below is calculated among the 2,006 hadrons in this particular test set.
 
+### Feature correlation
+
+![Pearson correlation heatmap of the MAGIC training features](./outputs/feature_correlation.png)
+
+The heatmap shows Pearson correlations between the ten input features,
+calculated over the 9,985 training events used by the operating-point study.
+It combines gamma and hadron events and excludes its validation and test
+sets. Red indicates positive linear association, blue negative association,
+and values near zero little linear association. The diagonal is 1 because
+each feature is perfectly correlated with itself.
+
+For example, `fConc` and `fConc1` are strongly positively correlated
+(`r = 0.98`), while `fSize` and `fConc` are strongly negatively correlated
+(`r = -0.85`). These are descriptive observations about this training sample:
+correlation does not establish causation, detect every nonlinear relationship,
+or measure a feature's importance for classification. Similar features are
+not automatically redundant for every classifier. No features were removed
+based on this plot.
+
+To regenerate the figure from the repository root:
+
+```powershell
+python -m magic_telescope.feature_correlation
+```
+
+The command accepts `--data-path` and `--plot-path` to use another dataset or
+save the figure elsewhere.
+
 ## Results
 
 The following are the results from one run with the settings above. Percentages
@@ -216,3 +244,5 @@ attributes the data to Monte Carlo simulations with CORSIKA and cites:
 R. K. Bock et al. (2004), “Methods for multidimensional event classification:
 a case study using images from a Cherenkov gamma-ray telescope,”
 *Nuclear Instruments and Methods in Physics Research A*, 516, 511–528.
+
+Bock, R. (2004). MAGIC Gamma Telescope [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C52C8B. Licensed under CC BY 4.0. The code maps class labels to numeric values.
