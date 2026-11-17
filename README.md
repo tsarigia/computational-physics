@@ -18,29 +18,23 @@ model-specific commands, and results.
 
 ## Getting started
 
-The projects use Python. From the repository root, create and activate a
-virtual environment:
+The projects use Python. For MAGIC, create and activate a virtual environment
+with Python 3.13.0 from the repository root:
 
 ```powershell
-py -m venv .venv
+py -3.13 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-Install the shared project dependencies:
+Install the tested, pinned dependencies from the root requirements file:
 
 ```powershell
 python -m pip install -r requirements.txt
 ```
 
-The pendulum ANN project also keeps its own dependency list. To use the same
-environment for all projects, install it as well:
-
-```powershell
-python -m pip install -r .\pendulum_ann\requirements.txt
-```
-
-Alternatively, follow the setup instructions in an individual project's
-README to install only what that project needs.
+The pendulum ANN project has its own dependency list. Use a separate virtual
+environment and follow its README to avoid changing the tested MAGIC
+environment.
 
 ## Run a project
 

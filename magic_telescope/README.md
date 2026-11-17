@@ -29,14 +29,19 @@ accuracy alone is not an adequate measure of scientific usefulness.
 
 ## Setup
 
-From the repository root, create and activate a virtual environment and
-install the project dependencies:
+From the repository root, create and activate a virtual environment with
+Python 3.13.0 and install the pinned dependencies:
 
 ```powershell
-py -m venv .venv
+py -3.13 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 ```
+
+The pinned environment was tested on Windows with Python 3.13.0. The MAGIC
+tests and operating-point study passed with these versions. The pins include
+direct and transitive dependencies to make recreation easier; different
+platforms or numerical libraries can still produce different results.
 
 ## Run the classifiers
 
@@ -194,7 +199,7 @@ The test set contains 5,706 events. All splits use `random_state=42`.
   acceptance and gamma recall are reported separately with two-sided 95%
   Wilson intervals for the respective proportions.
 
-For the supplied dataset, using scikit-learn 1.9.1 and NumPy 2.5.4, the selected
+For the supplied dataset, using scikit-learn 1.5.2 and NumPy 2.1.2, the selected
 model was a 100-tree Random Forest with `min_samples_leaf=1`; its training CV
 partial ROC-AUC was 0.8245 and its test ROC-AUC was 0.9350. Results may vary
 with dependency versions. The output was:
