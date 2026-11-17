@@ -51,6 +51,7 @@ def main() -> None:
         stratify=y_development,
     )
     
+    # we compute the Pearson correlation matrix for the training features
     correlation = X_train.corr(method="pearson")
     values = correlation.to_numpy()
     
