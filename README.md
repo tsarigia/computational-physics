@@ -11,6 +11,7 @@
 | Project | What it does | Open |
 |---|---|---|
 | **MAGIC Telescope Classification** | Compares classifiers that distinguish gamma-ray events from hadron background using the MAGIC dataset. | [Open `magic_telescope/`](./magic_telescope/) |
+| **Ionosphere Classification** | Explores real radar-return measurements and classifies evidence of ionospheric structure. | [Open `ionosphere/`](./ionosphere/) |
 | **Pendulum ANN** | Generates synthetic pendulum data and trains a feedforward neural network to predict oscillation period. | [Open `pendulum_ann/`](./pendulum_ann/) |
 
 Each project folder contains its own README with dataset details, methodology,
@@ -44,20 +45,30 @@ Run these commands from the repository root after installing dependencies:
 # MAGIC gamma-ray classification
 python -m magic_telescope.random_forest_classifier
 
+# Ionosphere radar-return exploratory analysis
+python -m ionosphere.explore
+
+# Ionosphere initial classifier screening
+python -m ionosphere.model_comparison
+
+# Ionosphere nested CV with parameter tuning
+python -m ionosphere.model_comparison --nested
+
 # Pendulum ANN: generate data, then train and evaluate
 python -m pendulum_ann.generate_dataset
 python -m pendulum_ann.train_model
 ```
 
-The MAGIC project expects its dataset in its folder. The pendulum project
-generates its own reproducible synthetic dataset. See each project's README
-for all model commands, optional arguments, outputs, and interpretation of
-its results.
+The MAGIC and Ionosphere projects expect their datasets in their folders. The
+pendulum project generates its own reproducible synthetic dataset. See each
+project's README for all model commands, optional arguments, outputs, and
+interpretation of its results.
 
-## Run the MAGIC tests
+## Run the tests
 
 ```powershell
 python -m unittest discover -s magic_telescope -p "test_*.py" -v
+python -m unittest discover -s ionosphere -p "test_*.py" -v
 ```
 
 GitHub Actions also runs these tests on pushes and pull requests.
@@ -66,5 +77,6 @@ GitHub Actions also runs these tests on pushes and pull requests.
 
 ```text
 magic_telescope/   MAGIC event-classification project and dataset
+ionosphere/        Ionosphere radar-return analysis and dataset
 pendulum_ann/      Pendulum-period ANN, dataset generator, and outputs
 ```
